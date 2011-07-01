@@ -1,0 +1,1 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GetResultByJQueryAjax.aspx.cs" Inherits="SampleWebApplication.GetResultByJQueryAjax" %>

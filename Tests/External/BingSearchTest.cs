@@ -21,7 +21,7 @@ namespace Tests
             Assert.Contains(Browser.Text, "Automation Platform for .NET");
         }
 
-        [Url("http://www.bing.com", OnLocalHost = false)]
+        [Url("http://www.bing.com")]
         public class Page : WatiN.Core.Page
         {
             [FindBy(Name = "q")]

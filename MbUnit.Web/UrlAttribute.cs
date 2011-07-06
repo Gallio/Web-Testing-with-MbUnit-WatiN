@@ -9,6 +9,7 @@ namespace MbUnit.Web
     public class UrlAttribute : Attribute
     {
         private readonly string url;
+        private readonly bool onLocalHost;
 
         public string Url
         {
@@ -17,7 +18,7 @@ namespace MbUnit.Web
 
         public bool OnLocalHost
         {
-            get; set;
+            get { return onLocalHost; }
         }
 
         public UrlAttribute(string url)
@@ -26,7 +27,7 @@ namespace MbUnit.Web
                 throw new ArgumentNullException("url");
 
             this.url = url;
-            OnLocalHost = true;
+            onLocalHost = url.StartsWith("/");
         }
     }
 }

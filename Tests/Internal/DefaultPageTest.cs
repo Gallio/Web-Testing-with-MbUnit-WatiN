@@ -48,7 +48,7 @@ namespace Tests
             Assert.IsNull(page.SpanResultAsync.Text);
         }
 
-        [Page, Url("/Default.aspx")]
+        [Url("/Default.aspx")]
         public class Page : WatiN.Core.Page
         {
             [FindBy(Id = "MainContent_TextBoxName")]

@@ -21,7 +21,7 @@ namespace Tests
             Assert.Contains(Browser.Text, "Generative Unit Test Framework for the .NET Framework.");
         }
 
-        [Page, Url("http://www.google.com", OnLocalHost = false)]
+        [Url("http://www.google.com", OnLocalHost = false)]
         public class Page : WatiN.Core.Page
         {
             [FindBy(Name = "q")]

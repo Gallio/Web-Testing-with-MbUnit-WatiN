@@ -47,6 +47,9 @@ namespace MbUnit.Web
 
         private string BuildPageUrl(string extra)
         {
+            if (String.IsNullOrEmpty(extra) && String.IsNullOrEmpty(pageSettings.Url))
+                throw new InvalidOperationException("No URL specified for the page. Pass an absolute or relative URL to the GoToPage method or decorate the page model type with an [URL] attribute.");
+
             var builder = new StringBuilder();
 
             if (pageSettings.OnLocalHost)

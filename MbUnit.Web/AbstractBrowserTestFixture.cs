@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using WatiN.Core;
@@ -8,12 +9,12 @@ namespace MbUnit.Web
     public abstract class AbstractBrowserTestFixture<TPage>
         where TPage : Page, new()
     {
-        private readonly string localHostUrl;
+        private readonly Func<string> getLocalHostUrl;
         private readonly PageSettings<TPage> pageSettings = new PageSettings<TPage>();
 
-        protected AbstractBrowserTestFixture(string localHostUrl = null)
+        protected AbstractBrowserTestFixture(Func<string> getLocalHostUrl = null)
         {
-            this.localHostUrl = localHostUrl ?? String.Empty;
+            this.getLocalHostUrl = getLocalHostUrl ?? (() => String.Empty);
         }
 
         public static Browser Browser
@@ -53,7 +54,7 @@ namespace MbUnit.Web
             var builder = new StringBuilder();
 
             if (pageSettings.OnLocalHost)
-                builder.Append(localHostUrl);
+                builder.Append(getLocalHostUrl());
 
             builder.Append(pageSettings.Url);
 

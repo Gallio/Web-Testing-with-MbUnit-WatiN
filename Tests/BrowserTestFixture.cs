@@ -11,7 +11,7 @@ namespace Tests
         where TPage : Page, new()
     {
         protected BrowserTestFixture()
-            : base(() => DevelopmentServer<ScopeMarker>.Instance.LocalHostUrl)
+            : base(() => WebTestServer<ScopeMarker>.Instance.LocalHostUrl)
         {
         }
     }

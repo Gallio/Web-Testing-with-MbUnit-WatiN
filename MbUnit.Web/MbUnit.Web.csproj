@@ -55,7 +55,7 @@
     <Compile Include="BrowserContext.cs" />
     <Compile Include="BrowserType.cs" />
     <Compile Include="ConfigurationSectionHandler.cs" />
-    <Compile Include="DevelopmentServer.cs" />
+    <Compile Include="WebTestServer.cs" />
     <Compile Include="IBrowserConfiguration.cs" />
     <Compile Include="PageSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

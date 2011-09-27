@@ -12,15 +12,15 @@ using System.Xml;
 
 namespace MbUnit.Web
 {
-    public class DevelopmentServer<TScope>
+    public class WebTestServer<TScope>
     {
-        private static readonly Lazy<DevelopmentServer<TScope>> LazyInstance = new Lazy<DevelopmentServer<TScope>>(CreateNewInstance);
+        private static readonly Lazy<WebTestServer<TScope>> LazyInstance = new Lazy<WebTestServer<TScope>>(CreateNewInstance);
 
         private static readonly Lazy<Settings> LazySettings = new Lazy<Settings>(() =>
         {
             var map = new ExeConfigurationFileMap { ExeConfigFilename = typeof(TScope).Assembly.Location + ".config" };
             Configuration config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-            ConfigurationSection section = config.GetSection("developmentServer");
+            ConfigurationSection section = config.GetSection("webTestServer");
 
             if (section == null)
                 return Settings.Default;
@@ -28,7 +28,7 @@ namespace MbUnit.Web
             string xml = section.SectionInformation.GetRawXml();
             var doc = new XmlDocument();
             doc.LoadXml(xml);
-            return (Settings)new ConfigurationSectionHandler().Create(null, null, doc.SelectSingleNode("/developmentServer"));
+            return (Settings)new ConfigurationSectionHandler().Create(null, null, doc.SelectSingleNode("/webTestServer"));
         });
 
         public string LocalHostUrl
@@ -41,7 +41,7 @@ namespace MbUnit.Web
             get { return LocalHostUrl + LazySettings.Value.VirtualPath; }
         }
 
-        public static DevelopmentServer<TScope> Instance
+        public static WebTestServer<TScope> Instance
         {
             get { return LazyInstance.Value; }
         }
@@ -56,21 +56,21 @@ namespace MbUnit.Web
             }
         }
 
-        protected DevelopmentServer()
+        protected WebTestServer()
         {
         }
 
-        private static DevelopmentServer<TScope> CreateNewInstance()
+        private static WebTestServer<TScope> CreateNewInstance()
         {
             KillExistingProcesses();
-            var server = new DevelopmentServer<TScope>();
+            var server = new WebTestServer<TScope>();
             StartProcess();
             return server;
         }
 
         private static void KillExistingProcesses()
         {
-            foreach (var process in Process.GetProcessesByName("WebDev.WebServer40"))
+            foreach (var process in Process.GetProcessesByName(LazySettings.Value.Server.ProcessName))
             {
                 if (!process.HasExited)
                 {
@@ -83,17 +83,11 @@ namespace MbUnit.Web
         private static void StartProcess()
         {
             var process = new Process();
-            process.StartInfo.FileName = WebServerPaths.First(x => File.Exists(x.Value)).Value;
-            process.StartInfo.Arguments = String.Format("/port:{0} /path:\"{1}\" /virtual:\"{2}\"", LazySettings.Value.PortNumber, PhysicalPath, LazySettings.Value.VirtualPath);
+            process.StartInfo.FileName = LazySettings.Value.Server.GetProcessFileName();
+            process.StartInfo.Arguments = LazySettings.Value.Server.FormatArguments(LazySettings.Value.PortNumber, PhysicalPath, LazySettings.Value.VirtualPath);
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = false;
             process.Start();
         }
-
-        private static readonly Lazy<string>[] WebServerPaths = new[]
-        {
-            new Lazy<string>(() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles), @"Microsoft Shared\DevServer\10.0\WebDev.WebServer40.exe")),                                
-            new Lazy<string>(() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86), @"Microsoft Shared\DevServer\10.0\WebDev.WebServer40.exe")),                                
-        };
     }
 }
